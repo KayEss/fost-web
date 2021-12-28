@@ -1,3 +1,6 @@
+2021-12-28  Kirit Saelensminde  <kirit@felspar.com>
+ Add new `fostgres.middleware.response` to set response headers.
+
 2020-02-12  Kirit Saelensminde  <kirit@felspar.com>
  * Add middleware that can replace response text with fixed strings or setting values.
  * Deprecate use of view instances.
