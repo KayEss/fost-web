@@ -85,6 +85,28 @@ namespace fostlib {
                 const fostlib::fs::path &filename);
 
 
+        /**
+         * Helpers for responses that require particular handling
+         */
+
+        /// 405 Response builder
+        template<typename... Args>
+        inline std::pair<boost::shared_ptr<fostlib::mime>, int> response_405(
+                const fostlib::string &path,
+                fostlib::http::server::request &request,
+                const fostlib::host &host,
+                Args... method) {
+            fostlib::json::array_t methods;
+            (methods.push_back(fostlib::coerce<fostlib::json>(method)), ...);
+            fostlib::json::object_t config;
+            config["allow"] = fostlib::json{std::move(methods)};
+            fostlib::json::object_t view;
+            view["view"] = fostlib::json{"fost.response.405"};
+            view["configuration"] = fostlib::json{std::move(config)};
+            return view::execute(view, path, request, host);
+        }
+
+
     }
 
 

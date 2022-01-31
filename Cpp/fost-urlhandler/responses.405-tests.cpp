@@ -63,3 +63,12 @@ FSL_TEST_FUNCTION(multiple_allows_config) {
     FSL_CHECK_EQ(response.second, 405);
     FSL_CHECK_EQ(response.first->headers()["Allow"].value(), "GET, POST");
 }
+
+
+FSL_TEST_FUNCTION(response_builder) {
+    fostlib::http::server::request req;
+    auto const response = fostlib::urlhandler::response_405(
+            "/", req, fostlib::host(), "GET", "POST");
+    FSL_CHECK_EQ(response.second, 405);
+    FSL_CHECK_EQ(response.first->headers()["Allow"].value(), "GET, POST");
+}
