@@ -53,7 +53,7 @@ bool fostlib::urlhandler::service(fostlib::http::server::request &req) {
                     "exception", coerce<json>(e));
             fostlib::text_body response{
                     felspar::u8view{"<html><body>The request could not be "
-                               "parsed</body></html>"},
+                                    "parsed</body></html>"},
                     fostlib::mime::mime_headers(), "text/html"};
             req(response, 400);
         } catch (fostlib::exceptions::exception const &e) {
@@ -64,7 +64,7 @@ bool fostlib::urlhandler::service(fostlib::http::server::request &req) {
                     "exception", coerce<json>(e));
             fostlib::text_body response{
                     felspar::u8view{"<html><body>An error occurred in the "
-                               "request</body></html>"},
+                                    "request</body></html>"},
                     fostlib::mime::mime_headers(), "text/html"};
             req(response, 500);
         } catch (std::exception const &e) {
@@ -74,7 +74,7 @@ bool fostlib::urlhandler::service(fostlib::http::server::request &req) {
                     e.what())("exception", "type", typeid(e).name());
             fostlib::text_body response{
                     felspar::u8view{"<html><body>An error occurred in the "
-                               "request</body></html>"},
+                                    "request</body></html>"},
                     fostlib::mime::mime_headers(), "text/html"};
             req(response, 500);
         }
@@ -84,7 +84,7 @@ bool fostlib::urlhandler::service(fostlib::http::server::request &req) {
                 "hostname", hostname)("config", host_config);
         fostlib::text_body response{
                 felspar::u8view{"<html><body>No site found to service "
-                           "request</body></html>"},
+                                "request</body></html>"},
                 fostlib::mime::mime_headers(), "text/html"};
         req(response, 500);
     }

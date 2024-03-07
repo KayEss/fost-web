@@ -46,7 +46,8 @@ namespace {
             }
             if (config.has_key("message")) {
                 return std::make_pair(
-                        html(fostlib::coerce<felspar::u8string>(config["message"])),
+                        html(fostlib::coerce<felspar::u8string>(
+                                config["message"])),
                         response_status);
             }
             if (config.has_key("json")) {

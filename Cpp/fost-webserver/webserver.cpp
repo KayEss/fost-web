@@ -48,7 +48,8 @@ FSL_MAIN(
     configuration.reserve(args.size());
     for (std::size_t arg{1}; arg != args.size(); ++arg) {
         o << "Loading config " << fostlib::json(args[arg].value());
-        auto filename = fostlib::coerce<std::filesystem::path>(args[arg].value());
+        auto filename =
+                fostlib::coerce<std::filesystem::path>(args[arg].value());
         configuration.emplace_back(std::move(filename));
     }
 

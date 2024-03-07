@@ -64,9 +64,8 @@ namespace {
                 if (inner)
                     replace_content(skin, "{{ content body }}", inner.value());
 
-                std::shared_ptr<fostlib::mime> response(
-                        new fostlib::text_body(
-                                skin, wrapped.first->headers(), "text/html"));
+                std::shared_ptr<fostlib::mime> response(new fostlib::text_body(
+                        skin, wrapped.first->headers(), "text/html"));
                 return std::make_pair(response, wrapped.second);
             } else
                 return wrapped;

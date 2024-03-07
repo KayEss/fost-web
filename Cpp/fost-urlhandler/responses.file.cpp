@@ -52,7 +52,8 @@ std::pair<std::shared_ptr<fostlib::mime>, int> fostlib::urlhandler::serve_file(
             "response", "headers", "expires"};
     if (configuration.has_key(expires_path)) {
         auto expire_duration =
-                fostlib::coerce<std::chrono::system_clock::duration>(configuration[expires_path]);
+                fostlib::coerce<std::chrono::system_clock::duration>(
+                        configuration[expires_path]);
         headers.set("Expires", timestamp_to_string(now + expire_duration));
     }
     fostlib::string validator = etag(filename);

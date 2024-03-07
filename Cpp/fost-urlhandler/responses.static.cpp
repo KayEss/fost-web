@@ -22,8 +22,8 @@ namespace {
                         __PRETTY_FUNCTION__,
                         "Must specify a root folder when serving a directory");
             }
-            std::filesystem::path root(
-                    fostlib::coerce<std::filesystem::path>(configuration["root"]));
+            std::filesystem::path root(fostlib::coerce<std::filesystem::path>(
+                    configuration["root"]));
             std::filesystem::path filename =
                     root / fostlib::coerce<std::filesystem::path>(path);
             if (std::filesystem::is_directory(filename)) {
@@ -43,7 +43,8 @@ namespace {
                 fostlib::http::server::request &req,
                 const fostlib::host &host,
                 const std::filesystem::path &dirname) const {
-            if (not static_cast<felspar::u8view>(req.file_spec()).ends_with("/")) {
+            if (not static_cast<felspar::u8view>(req.file_spec())
+                            .ends_with("/")) {
                 fostlib::json redirect;
                 fostlib::insert(redirect, "view", "fost.response.302");
                 fostlib::insert(
@@ -131,8 +132,8 @@ namespace {
                 const fostlib::string &path,
                 fostlib::http::server::request &req,
                 const fostlib::host &host) const {
-            std::filesystem::path root(
-                    fostlib::coerce<std::filesystem::path>(configuration["root"]));
+            std::filesystem::path root(fostlib::coerce<std::filesystem::path>(
+                    configuration["root"]));
             std::filesystem::path filename =
                     root / fostlib::coerce<std::filesystem::path>(path);
             if (std::filesystem::is_directory(filename)) {

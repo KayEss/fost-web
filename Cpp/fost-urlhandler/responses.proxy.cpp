@@ -108,15 +108,14 @@ fostlib::http::user_agent::request fostlib::web_proxy::base::ua_request(
 }
 
 
-std::pair<std::shared_ptr<fostlib::mime>, int>
-        fostlib::web_proxy::base::respond(
-                json const &configuration,
-                fostlib::url const &location,
-                string const &path,
-                http::server::request const &request,
-                host const &host,
-                std::shared_ptr<mime> body,
-                int status) const {
+std::pair<std::shared_ptr<fostlib::mime>, int> fostlib::web_proxy::base::respond(
+        json const &configuration,
+        fostlib::url const &location,
+        string const &path,
+        http::server::request const &request,
+        host const &host,
+        std::shared_ptr<mime> body,
+        int status) const {
     return {body, status};
 }
 

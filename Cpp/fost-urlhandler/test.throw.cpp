@@ -60,8 +60,7 @@ namespace {
                                 exception_name);
                     } else {
                         throw fostlib::exceptions::not_implemented(
-                                "Exception name not found",
-                                exception_name);
+                                "Exception name not found", exception_name);
                     }
                 } else {
                     throw fostlib::exceptions::not_implemented(

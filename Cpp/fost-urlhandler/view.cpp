@@ -26,8 +26,7 @@ namespace {
     fostlib::string view_name(const fostlib::json &obj) {
         if (obj["view"].isnull()) {
             throw fostlib::exceptions::not_implemented(
-                    "No view name was given in the configuration",
-                    obj);
+                    "No view name was given in the configuration", obj);
         }
         return fostlib::coerce<fostlib::string>(obj["view"]);
         ;
