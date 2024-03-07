@@ -1,11 +1,3 @@
-/**
-    Copyright 2020 Red Anchor Trading Co. Ltd.
-
-    Distributed under the Boost Software License, Version 1.0.
-    See <http://www.boost.org/LICENSE_1_0.txt>
- */
-
-
 #include "fost-urlhandler.hpp"
 #include <fost/urlhandler.hpp>
 #include <fost/log>
@@ -21,7 +13,7 @@ namespace {
       public:
         middleware_template() : view("fost.middleware.replace") {}
 
-        std::pair<boost::shared_ptr<fostlib::mime>, int> operator()(
+        std::pair<std::shared_ptr<fostlib::mime>, int> operator()(
                 const fostlib::json &configuration,
                 const fostlib::string &path,
                 fostlib::http::server::request &req,
@@ -71,7 +63,7 @@ namespace {
                                 fostlib::coerce<fostlib::string>(replacement));
                     }
                 }
-                return {boost::make_shared<fostlib::text_body>(
+                return {std::make_shared<fostlib::text_body>(
                                 text, wrapped.first->headers()),
                         wrapped.second};
             } else {

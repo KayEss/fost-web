@@ -1,13 +1,6 @@
-/**
-    Copyright 2008-2020 Red Anchor Trading Co. Ltd.
-
-    Distributed under the Boost Software License, Version 1.0.
-    See <http://www.boost.org/LICENSE_1_0.txt>
- */
-
-
 #include <fost/dynlib>
 #include <fost/log>
+#include <fost/log-sinks.hpp>
 #include <fost/main>
 #include <fost/threading>
 #include <fost/unicode>
@@ -47,15 +40,15 @@ FSL_MAIN(
 (fostlib::ostream &o, fostlib::arguments &args) {
     args.commandSwitch("C", c_cwd.section(), c_cwd.name());
     if (not c_cwd.value().empty()) {
-        fostlib::fs::current_path(
-                fostlib::coerce<fostlib::fs::path>(c_cwd.value()));
+        std::filesystem::current_path(
+                fostlib::coerce<std::filesystem::path>(c_cwd.value()));
     }
     // Load the configuration files we've been given on the command line
     std::vector<fostlib::settings> configuration;
     configuration.reserve(args.size());
     for (std::size_t arg{1}; arg != args.size(); ++arg) {
         o << "Loading config " << fostlib::json(args[arg].value());
-        auto filename = fostlib::coerce<fostlib::fs::path>(args[arg].value());
+        auto filename = fostlib::coerce<std::filesystem::path>(args[arg].value());
         configuration.emplace_back(std::move(filename));
     }
 
@@ -74,11 +67,11 @@ FSL_MAIN(
     args.commandSwitch("m", c_mime.section(), c_mime.name());
 
     // Set up the logging options
-    std::unique_ptr<fostlib::log::global_sink_configuration> loggers;
-    if (not c_logger.value().isnull() && c_logger.value().has_key("sinks")) {
-        loggers = std::make_unique<fostlib::log::global_sink_configuration>(
-                c_logger.value());
-    }
+    // std::unique_ptr<fostlib::log::global_sink_configuration> loggers;
+    // if (not c_logger.value().isnull() && c_logger.value().has_key("sinks")) {
+    //     loggers = std::make_unique<fostlib::log::global_sink_configuration>(
+    //             c_logger.value());
+    // }
 
     // Load MIME types
     fostlib::urlhandler::load_mime_configuration(c_mime.value());

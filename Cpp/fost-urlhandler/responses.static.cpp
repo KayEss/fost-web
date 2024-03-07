@@ -1,11 +1,3 @@
-/**
-    Copyright 2011-2020 Red Anchor Trading Co. Ltd.
-
-    Distributed under the Boost Software License, Version 1.0.
-    See <http://www.boost.org/LICENSE_1_0.txt>
- */
-
-
 #include "fost-urlhandler.hpp"
 #include <fost/urlhandler.hpp>
 #include <fost/insert>
@@ -18,9 +10,9 @@ namespace {
 
     const class directory : public fostlib::urlhandler::view {
       public:
-        directory(f5::u8string name) : view{name} {}
+        directory(felspar::u8string name) : view{name} {}
 
-        std::pair<boost::shared_ptr<fostlib::mime>, int> operator()(
+        std::pair<std::shared_ptr<fostlib::mime>, int> operator()(
                 const fostlib::json &configuration,
                 const fostlib::string &path,
                 fostlib::http::server::request &req,
@@ -30,11 +22,11 @@ namespace {
                         __PRETTY_FUNCTION__,
                         "Must specify a root folder when serving a directory");
             }
-            fostlib::fs::path root(
-                    fostlib::coerce<fostlib::fs::path>(configuration["root"]));
-            fostlib::fs::path filename =
-                    root / fostlib::coerce<fostlib::fs::path>(path);
-            if (fostlib::fs::is_directory(filename)) {
+            std::filesystem::path root(
+                    fostlib::coerce<std::filesystem::path>(configuration["root"]));
+            std::filesystem::path filename =
+                    root / fostlib::coerce<std::filesystem::path>(path);
+            if (std::filesystem::is_directory(filename)) {
                 return serve_directory(
                         configuration, path, req, host, filename);
             } else {
@@ -45,13 +37,13 @@ namespace {
             }
         }
 
-        std::pair<boost::shared_ptr<fostlib::mime>, int> serve_directory(
+        std::pair<std::shared_ptr<fostlib::mime>, int> serve_directory(
                 const fostlib::json &configuration,
                 const fostlib::string &path,
                 fostlib::http::server::request &req,
                 const fostlib::host &host,
-                const fostlib::fs::path &dirname) const {
-            if (not static_cast<f5::u8view>(req.file_spec()).ends_with("/")) {
+                const std::filesystem::path &dirname) const {
+            if (not static_cast<felspar::u8view>(req.file_spec()).ends_with("/")) {
                 fostlib::json redirect;
                 fostlib::insert(redirect, "view", "fost.response.302");
                 fostlib::insert(
@@ -61,12 +53,12 @@ namespace {
             }
             auto filename = dirname;
             if (configuration.has_key("index")) {
-                filename /= fostlib::coerce<fostlib::fs::path>(
+                filename /= fostlib::coerce<std::filesystem::path>(
                         configuration["index"]);
             } else {
                 filename /= "index.html";
             }
-            if (fostlib::fs::exists(filename)) {
+            if (std::filesystem::exists(filename)) {
                 return fostlib::urlhandler::serve_file(
                         configuration, req, filename);
             }
@@ -74,12 +66,12 @@ namespace {
             return listing(configuration, path, req, host, dirname);
         }
 
-        virtual std::pair<boost::shared_ptr<fostlib::mime>, int>
+        virtual std::pair<std::shared_ptr<fostlib::mime>, int>
                 listing(const fostlib::json &configuration,
                         const fostlib::string &path,
                         fostlib::http::server::request &req,
                         const fostlib::host &host,
-                        const fostlib::fs::path &) const {
+                        const std::filesystem::path &) const {
             return execute(fostlib::json{"fost.response.403"}, path, req, host);
         }
     } c_directory{"fost.static.directory"};
@@ -89,17 +81,17 @@ namespace {
       public:
         directory_json() : directory("fost.static.directory.json") {}
 
-        std::pair<boost::shared_ptr<fostlib::mime>, int>
+        std::pair<std::shared_ptr<fostlib::mime>, int>
                 listing(const fostlib::json &configuration,
                         const fostlib::string &path,
                         fostlib::http::server::request &req,
                         const fostlib::host &host,
-                        const fostlib::fs::path &directory) const {
+                        const std::filesystem::path &directory) const {
             fostlib::json files = fostlib::json::object_t{};
             for (auto const &node :
-                 fostlib::fs::directory_iterator(directory)) {
+                 std::filesystem::directory_iterator(directory)) {
                 fostlib::json entry;
-                if (fostlib::fs::is_directory(node.path())) {
+                if (std::filesystem::is_directory(node.path())) {
                     fostlib::insert(entry, "directory", true);
                     fostlib::insert(
                             entry, "path",
@@ -115,7 +107,7 @@ namespace {
                         fostlib::coerce<fostlib::string>(node.path().filename()),
                         entry);
             }
-            boost::shared_ptr<fostlib::mime> response(new fostlib::text_body(
+            std::shared_ptr<fostlib::mime> response(new fostlib::text_body(
                     fostlib::json::unparse(files, false),
                     fostlib::mime::mime_headers(), "application/json"));
             return std::make_pair(response, 200);
@@ -134,16 +126,16 @@ namespace {
                                .value_or(false);
         }
 
-        std::pair<boost::shared_ptr<fostlib::mime>, int> operator()(
+        std::pair<std::shared_ptr<fostlib::mime>, int> operator()(
                 const fostlib::json &configuration,
                 const fostlib::string &path,
                 fostlib::http::server::request &req,
                 const fostlib::host &host) const {
-            fostlib::fs::path root(
-                    fostlib::coerce<fostlib::fs::path>(configuration["root"]));
-            fostlib::fs::path filename =
-                    root / fostlib::coerce<fostlib::fs::path>(path);
-            if (fostlib::fs::is_directory(filename)) {
+            std::filesystem::path root(
+                    fostlib::coerce<std::filesystem::path>(configuration["root"]));
+            std::filesystem::path filename =
+                    root / fostlib::coerce<std::filesystem::path>(path);
+            if (std::filesystem::is_directory(filename)) {
                 if (configuration.has_key("directory")) {
                     return execute(configuration["directory"], path, req, host);
                 } else {
@@ -151,7 +143,7 @@ namespace {
                             configuration, path, req, host, filename);
                 }
             } else {
-                if (not fostlib::fs::exists(filename)) {
+                if (not std::filesystem::exists(filename)) {
                     return execute(
                             fostlib::json("fost.response.404"), path, req,
                             host);
@@ -161,8 +153,8 @@ namespace {
                 return fostlib::urlhandler::serve_file(
                         configuration, req, filename);
             } else if (allow_delete(configuration) && req.method() == "DELETE") {
-                fostlib::fs::remove(filename);
-                boost::shared_ptr<fostlib::mime> response(new fostlib::text_body(
+                std::filesystem::remove(filename);
+                std::shared_ptr<fostlib::mime> response(new fostlib::text_body(
                         "<html><head><title>Resource deleted</title></head>"
                         "<body><h1>Resource deleted</h1></body></html>",
                         fostlib::mime::mime_headers(), "text/html"));

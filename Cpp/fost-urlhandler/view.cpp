@@ -1,11 +1,3 @@
-/**
-    Copyright 2011-2019 Red Anchor Trading Co. Ltd.
-
-    Distributed under the Boost Software License, Version 1.0.
-    See <http://www.boost.org/LICENSE_1_0.txt>
- */
-
-
 #include "fost-urlhandler.hpp"
 #include <fost/insert>
 #include <fost/threading>
@@ -34,7 +26,7 @@ namespace {
     fostlib::string view_name(const fostlib::json &obj) {
         if (obj["view"].isnull()) {
             throw fostlib::exceptions::not_implemented(
-                    __func__, "No view name was given in the configuration",
+                    "No view name was given in the configuration",
                     obj);
         }
         return fostlib::coerce<fostlib::string>(obj["view"]);
@@ -90,7 +82,7 @@ const fostlib::urlhandler::view &
 }
 
 
-std::pair<boost::shared_ptr<fostlib::mime>, int>
+std::pair<std::shared_ptr<fostlib::mime>, int>
         fostlib::urlhandler::view::execute(
                 const fostlib::json &configuration,
                 const fostlib::string &path,
@@ -98,7 +90,7 @@ std::pair<boost::shared_ptr<fostlib::mime>, int>
                 const fostlib::host &host) {
     try {
 
-        std::pair<boost::shared_ptr<fostlib::mime>, int> response;
+        std::pair<std::shared_ptr<fostlib::mime>, int> response;
         if (configuration.isobject()) {
             auto view_fn = find_view(
                     view_name(configuration), configuration["configuration"]);

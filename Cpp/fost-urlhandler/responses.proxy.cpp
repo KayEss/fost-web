@@ -1,11 +1,3 @@
-/**
-    Copyright 2014-2019 Red Anchor Trading Co. Ltd.
-
-    Distributed under the Boost Software License, Version 1.0.
-    See <http://www.boost.org/LICENSE_1_0.txt>
- */
-
-
 #include "fost-urlhandler.hpp"
 #include <fost/web-proxy.hpp>
 #include <fost/log>
@@ -44,13 +36,13 @@ namespace {
                 fostlib::host const &host) const override;
         /// Replace any `Location` header that goes to the upstream
         /// with the address used in the proxy request
-        std::pair<boost::shared_ptr<fostlib::mime>, int>
+        std::pair<std::shared_ptr<fostlib::mime>, int>
                 respond(fostlib::json const &configuration,
                         fostlib::url const &location,
                         fostlib::string const &path,
                         fostlib::http::server::request const &request,
                         fostlib::host const &host,
-                        boost::shared_ptr<fostlib::mime> body,
+                        std::shared_ptr<fostlib::mime> body,
                         int status) const override;
     } c_reverse;
 
@@ -63,7 +55,7 @@ namespace {
  */
 
 
-std::pair<boost::shared_ptr<fostlib::mime>, int>
+std::pair<std::shared_ptr<fostlib::mime>, int>
         fostlib::web_proxy::base::operator()(
                 json const &configuration,
                 string const &path,
@@ -116,14 +108,14 @@ fostlib::http::user_agent::request fostlib::web_proxy::base::ua_request(
 }
 
 
-std::pair<boost::shared_ptr<fostlib::mime>, int>
+std::pair<std::shared_ptr<fostlib::mime>, int>
         fostlib::web_proxy::base::respond(
                 json const &configuration,
                 fostlib::url const &location,
                 string const &path,
                 http::server::request const &request,
                 host const &host,
-                boost::shared_ptr<mime> body,
+                std::shared_ptr<mime> body,
                 int status) const {
     return {body, status};
 }
@@ -146,13 +138,13 @@ fostlib::http::user_agent::request reverse::ua_request(
 }
 
 
-std::pair<boost::shared_ptr<fostlib::mime>, int> reverse::respond(
+std::pair<std::shared_ptr<fostlib::mime>, int> reverse::respond(
         fostlib::json const &configuration,
         fostlib::url const &location,
         fostlib::string const &path,
         fostlib::http::server::request const &request,
         fostlib::host const &host,
-        boost::shared_ptr<fostlib::mime> body,
+        std::shared_ptr<fostlib::mime> body,
         int status) const {
     if (body->headers().exists("Location")
         && configuration.has_key("Location")) {

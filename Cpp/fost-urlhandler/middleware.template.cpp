@@ -1,11 +1,3 @@
-/**
-    Copyright 2011-2020 Red Anchor Trading Co. Ltd.
-
-    Distributed under the Boost Software License, Version 1.0.
-    See <http://www.boost.org/LICENSE_1_0.txt>
- */
-
-
 #include "fost-urlhandler.hpp"
 #include <fost/urlhandler.hpp>
 
@@ -41,7 +33,7 @@ namespace {
       public:
         middleware_template() : view("fost.middleware.template") {}
 
-        std::pair<boost::shared_ptr<fostlib::mime>, int> operator()(
+        std::pair<std::shared_ptr<fostlib::mime>, int> operator()(
                 const fostlib::json &configuration,
                 const fostlib::string &path,
                 fostlib::http::server::request &req,
@@ -50,12 +42,12 @@ namespace {
                     fostlib::coerce<fostlib::string>(configuration["view"]));
             std::pair<fostlib::string, fostlib::json> view_fn =
                     view::find_view(view);
-            std::pair<boost::shared_ptr<fostlib::mime>, int> wrapped(
+            std::pair<std::shared_ptr<fostlib::mime>, int> wrapped(
                     view_for(view_fn.first)(view_fn.second, path, req, h));
             if (wrapped.first->headers()["Content-Type"].value()
                 == "text/html") {
                 fostlib::string skin(fostlib::utf::load_file(
-                        fostlib::coerce<fostlib::fs::wpath>(
+                        fostlib::coerce<std::filesystem::path>(
                                 configuration["template"])));
                 fostlib::string content(
                         fostlib::coerce<fostlib::string>(*wrapped.first));
@@ -72,7 +64,7 @@ namespace {
                 if (inner)
                     replace_content(skin, "{{ content body }}", inner.value());
 
-                boost::shared_ptr<fostlib::mime> response(
+                std::shared_ptr<fostlib::mime> response(
                         new fostlib::text_body(
                                 skin, wrapped.first->headers(), "text/html"));
                 return std::make_pair(response, wrapped.second);

@@ -1,11 +1,3 @@
-/**
-    Copyright 2012-2020 Red Anchor Trading Co. Ltd.
-
-    Distributed under the Boost Software License, Version 1.0.
-    See <http://www.boost.org/LICENSE_1_0.txt>
- */
-
-
 #include "fost-urlhandler.hpp"
 #include <fost/urlhandler.hpp>
 
@@ -14,7 +6,7 @@ const class response_401 : public fostlib::urlhandler::view {
   public:
     response_401() : view("fost.response.401") {}
 
-    std::pair<boost::shared_ptr<fostlib::mime>, int> operator()(
+    std::pair<std::shared_ptr<fostlib::mime>, int> operator()(
             const fostlib::json &config,
             const fostlib::string &path,
             fostlib::http::server::request &req,
@@ -32,7 +24,7 @@ const class response_401 : public fostlib::urlhandler::view {
             else
                 schemes += ", " + fostlib::coerce<fostlib::string>(m.key());
         }
-        boost::shared_ptr<fostlib::mime> response;
+        std::shared_ptr<fostlib::mime> response;
         if (config["view"].isnull()) {
             response.reset(new fostlib::text_body(
                     "<html><head><title>Not authorized</title></head>"

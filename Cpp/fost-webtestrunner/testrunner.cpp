@@ -1,11 +1,3 @@
-/**
-    Copyright 2011-2020 Red Anchor Trading Co. Ltd.
-
-    Distributed under the Boost Software License, Version 1.0.
-    See <http://www.boost.org/LICENSE_1_0.txt>
- */
-
-
 #include <fost/urlhandler>
 
 
@@ -21,12 +13,12 @@ public fostlib::urlhandler::view {
   public:
     testrunner() : view("fost.test.runner") {}
 
-    std::pair<boost::shared_ptr<fostlib::mime>, int> operator()(
+    std::pair<std::shared_ptr<fostlib::mime>, int> operator()(
             const fostlib::json &,
             const fostlib::string &,
             fostlib::http::server::request &req,
             const fostlib::host &) const {
-        boost::shared_ptr<fostlib::mime> response(new fostlib::text_body(
+        std::shared_ptr<fostlib::mime> response(new fostlib::text_body(
                 "<html><head><title>Web server tests</title></head>"
                 "<body><h1>Web server tests</h1></body></html>",
                 fostlib::mime::mime_headers(), "text/html"));

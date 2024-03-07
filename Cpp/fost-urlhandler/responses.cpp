@@ -1,11 +1,3 @@
-/**
-    Copyright 2011-2020 Red Anchor Trading Co. Ltd.
-
-    Distributed under the Boost Software License, Version 1.0.
-    See <http://www.boost.org/LICENSE_1_0.txt>
- */
-
-
 #include "fost-urlhandler.hpp"
 #include <fost/urlhandler.hpp>
 
@@ -15,7 +7,7 @@ namespace {
 
     class response : public fostlib::urlhandler::view {
         int status;
-        f5::u8string message;
+        felspar::u8string message;
 
       public:
         response()
@@ -26,24 +18,24 @@ namespace {
         : view{"fost.response." + std::to_string(s)},
           status{s},
           message{fostlib::http::server::status_text(s)} {}
-        response(int s, f5::u8string m) : response(s) { message = m; }
+        response(int s, felspar::u8string m) : response(s) { message = m; }
 
-        boost::shared_ptr<fostlib::mime> html(f5::u8string msg) const {
-            f5::u8string resp_msg = "<html><head><title>" + msg
+        std::shared_ptr<fostlib::mime> html(felspar::u8string msg) const {
+            felspar::u8string resp_msg = "<html><head><title>" + msg
                     + "</title></head><body><h1>" + msg + "</h1></body></html>";
-            boost::shared_ptr<fostlib::mime> response(new fostlib::text_body(
+            std::shared_ptr<fostlib::mime> response(new fostlib::text_body(
                     resp_msg, fostlib::mime::mime_headers(), "text/html"));
             return response;
         }
 
-        boost::shared_ptr<fostlib::mime> json(fostlib::json json) const {
-            boost::shared_ptr<fostlib::mime> response(new fostlib::text_body(
+        std::shared_ptr<fostlib::mime> json(fostlib::json json) const {
+            std::shared_ptr<fostlib::mime> response(new fostlib::text_body(
                     fostlib::json::unparse(json, true),
                     fostlib::mime::mime_headers(), "application/json"));
             return response;
         }
 
-        std::pair<boost::shared_ptr<fostlib::mime>, int> operator()(
+        std::pair<std::shared_ptr<fostlib::mime>, int> operator()(
                 const fostlib::json &config,
                 const fostlib::string &,
                 fostlib::http::server::request &,
@@ -54,7 +46,7 @@ namespace {
             }
             if (config.has_key("message")) {
                 return std::make_pair(
-                        html(fostlib::coerce<f5::u8string>(config["message"])),
+                        html(fostlib::coerce<felspar::u8string>(config["message"])),
                         response_status);
             }
             if (config.has_key("json")) {

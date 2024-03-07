@@ -1,11 +1,3 @@
-/**
-    Copyright 2018-2019 Red Anchor Trading Co. Ltd.
-
-    Distributed under the Boost Software License, Version 1.0.
-    See <http://www.boost.org/LICENSE_1_0.txt>
- */
-
-
 #include "fost-urlhandler.hpp"
 #include <fost/urlhandler.hpp>
 #include <fost/crypto>
@@ -19,19 +11,19 @@ namespace {
       public:
         servefile() : view("fost.view.file") {}
 
-        std::pair<boost::shared_ptr<fostlib::mime>, int> operator()(
+        std::pair<std::shared_ptr<fostlib::mime>, int> operator()(
                 const fostlib::json &configuration,
                 const fostlib::string &path,
                 fostlib::http::server::request &req,
                 const fostlib::host &h) const {
             return fostlib::urlhandler::serve_file(
                     configuration, req,
-                    fostlib::coerce<fostlib::fs::path>(configuration));
+                    fostlib::coerce<std::filesystem::path>(configuration));
         }
     } c_servefile;
 
 
-    fostlib::string etag(const fostlib::fs::path &filename) {
+    fostlib::string etag(const std::filesystem::path &filename) {
         fostlib::digester hash(fostlib::md5);
         hash << filename;
         return fostlib::coerce<fostlib::string>(
@@ -49,18 +41,18 @@ namespace {
 }
 
 
-std::pair<boost::shared_ptr<fostlib::mime>, int> fostlib::urlhandler::serve_file(
+std::pair<std::shared_ptr<fostlib::mime>, int> fostlib::urlhandler::serve_file(
         const fostlib::json &configuration,
         fostlib::http::server::request &req,
-        const fostlib::fs::path &filename) {
+        const std::filesystem::path &filename) {
     fostlib::mime::mime_headers headers;
-    auto now = fostlib::timestamp::now();
+    auto now = std::chrono::system_clock::now();
     headers.set("Date", timestamp_to_string(now));
     static const fostlib::jcursor expires_path{
             "response", "headers", "expires"};
     if (configuration.has_key(expires_path)) {
         auto expire_duration =
-                fostlib::coerce<fostlib::timediff>(configuration[expires_path]);
+                fostlib::coerce<std::chrono::system_clock::duration>(configuration[expires_path]);
         headers.set("Expires", timestamp_to_string(now + expire_duration));
     }
     fostlib::string validator = etag(filename);
@@ -77,13 +69,13 @@ std::pair<boost::shared_ptr<fostlib::mime>, int> fostlib::urlhandler::serve_file
         && (req.data()->headers()["If-None-Match"].value() == validator
             || req.data()->headers()["If-None-Match"].value()
                     == "\"" + validator + "\"")) {
-        boost::shared_ptr<fostlib::mime> response(new fostlib::empty_mime(
+        std::shared_ptr<fostlib::mime> response(new fostlib::empty_mime(
                 fostlib::mime::mime_headers(),
                 fostlib::urlhandler::mime_type(filename)));
         response->headers() = headers;
         return std::make_pair(response, 304);
     } else {
-        boost::shared_ptr<fostlib::mime> response(new fostlib::file_body(
+        std::shared_ptr<fostlib::mime> response(new fostlib::file_body(
                 filename, headers, fostlib::urlhandler::mime_type(filename)));
         return std::make_pair(response, 200);
     }

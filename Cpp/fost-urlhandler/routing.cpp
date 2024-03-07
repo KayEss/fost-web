@@ -1,11 +1,3 @@
-/**
-    Copyright 2008-2020 Red Anchor Trading Co. Ltd.
-
-    Distributed under the Boost Software License, Version 1.0.
-    See <http://www.boost.org/LICENSE_1_0.txt>
- */
-
-
 #include "fost-urlhandler.hpp"
 #include <fost/crypto>
 #include <fost/exception/parse_error.hpp>
@@ -27,7 +19,7 @@ bool fostlib::urlhandler::service(fostlib::http::server::request &req) {
         log("req", "query",
             req.query_string().as_string().value_or(ascii_printable_string()));
         fostlib::text_body response{
-                f5::u8view{"400 Bad Request\n"}, {}, "text/plain"};
+                felspar::u8view{"400 Bad Request\n"}, {}, "text/plain"};
         req(response, 400);
         return true;
     }
@@ -60,7 +52,7 @@ bool fostlib::urlhandler::service(fostlib::http::server::request &req) {
                     "fostlib::exceptions::parse_error")(
                     "exception", coerce<json>(e));
             fostlib::text_body response{
-                    f5::u8view{"<html><body>The request could not be "
+                    felspar::u8view{"<html><body>The request could not be "
                                "parsed</body></html>"},
                     fostlib::mime::mime_headers(), "text/html"};
             req(response, 400);
@@ -71,7 +63,7 @@ bool fostlib::urlhandler::service(fostlib::http::server::request &req) {
                     "fostlib::exceptions::exception")(
                     "exception", coerce<json>(e));
             fostlib::text_body response{
-                    f5::u8view{"<html><body>An error occurred in the "
+                    felspar::u8view{"<html><body>An error occurred in the "
                                "request</body></html>"},
                     fostlib::mime::mime_headers(), "text/html"};
             req(response, 500);
@@ -81,7 +73,7 @@ bool fostlib::urlhandler::service(fostlib::http::server::request &req) {
                     "exception", "message",
                     e.what())("exception", "type", typeid(e).name());
             fostlib::text_body response{
-                    f5::u8view{"<html><body>An error occurred in the "
+                    felspar::u8view{"<html><body>An error occurred in the "
                                "request</body></html>"},
                     fostlib::mime::mime_headers(), "text/html"};
             req(response, 500);
@@ -91,7 +83,7 @@ bool fostlib::urlhandler::service(fostlib::http::server::request &req) {
                 "", "fostlib::urlhandler::service -- No configured web site")(
                 "hostname", hostname)("config", host_config);
         fostlib::text_body response{
-                f5::u8view{"<html><body>No site found to service "
+                felspar::u8view{"<html><body>No site found to service "
                            "request</body></html>"},
                 fostlib::mime::mime_headers(), "text/html"};
         req(response, 500);

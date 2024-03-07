@@ -1,13 +1,5 @@
-/**
-    Copyright 2019-2020 Red Anchor Trading Co. Ltd.
-
-    Distributed under the Boost Software License, Version 1.0.
-    See <http://www.boost.org/LICENSE_1_0.txt>
- */
-
-
 #include "fost-urlhandler.hpp"
-#include <f5/threading/map.hpp>
+#include <felspar/threading/map.hpp>
 #include <fost/test-throw-view.hpp>
 #include <fost/urlhandler.hpp>
 
@@ -20,7 +12,7 @@ namespace {
 
 
     auto const g_pthrowers = []() {
-        auto map = std::make_unique<f5::tsmap<
+        auto map = std::make_unique<felspar::threading::tsmap<
                 fostlib::string, std::function<void(fostlib::string)>>>();
         map->emplace_if_not_found("std::logic_error", [](fostlib::string msg) {
             throw std::logic_error{static_cast<std::string>(msg)};
@@ -41,7 +33,7 @@ namespace {
       public:
         throw_exception() : view("test.throw") {}
 
-        std::pair<boost::shared_ptr<fostlib::mime>, int> operator()(
+        std::pair<std::shared_ptr<fostlib::mime>, int> operator()(
                 const fostlib::json &config,
                 const fostlib::string &path,
                 fostlib::http::server::request &req,
@@ -51,7 +43,7 @@ namespace {
                         "Null configuration given to test.throw"};
             } else {
                 fostlib::string const message =
-                        fostlib::coerce<std::optional<f5::u8view>>(
+                        fostlib::coerce<std::optional<felspar::u8view>>(
                                 config["message"])
                                 .value_or(
                                         "Test exception message from "
@@ -64,17 +56,15 @@ namespace {
                     if (pthrower) {
                         pthrower(message);
                         throw fostlib::exceptions::not_implemented(
-                                __PRETTY_FUNCTION__,
                                 "Exception thrower didn't throw",
                                 exception_name);
                     } else {
                         throw fostlib::exceptions::not_implemented(
-                                __PRETTY_FUNCTION__, "Exception name not found",
+                                "Exception name not found",
                                 exception_name);
                     }
                 } else {
                     throw fostlib::exceptions::not_implemented(
-                            __PRETTY_FUNCTION__,
                             "No exception name given to be thrown");
                 }
             }
