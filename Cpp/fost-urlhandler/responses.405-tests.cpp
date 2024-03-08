@@ -1,11 +1,3 @@
-/**
-    Copyright 2012-2020 Red Anchor Trading Co. Ltd.
-
-    Distributed under the Boost Software License, Version 1.0.
-    See <http://www.boost.org/LICENSE_1_0.txt>
- */
-
-
 #include <fost/push_back>
 #include <fost/urlhandler>
 #include <fost/test>
@@ -29,7 +21,7 @@ FSL_TEST_FUNCTION(empty_allows_config) {
     fostlib::insert(allows, "view", "fost.response.405");
     fostlib::insert(allows, "configuration", "allow", fostlib::json::array_t());
     fostlib::http::server::request req;
-    std::pair<boost::shared_ptr<fostlib::mime>, int> response(
+    std::pair<std::shared_ptr<fostlib::mime>, int> response(
             fostlib::urlhandler::view::execute(
                     allows, "/", req, fostlib::host()));
     FSL_CHECK_EQ(response.second, 405);
@@ -43,7 +35,7 @@ FSL_TEST_FUNCTION(one_allows_config) {
     fostlib::insert(allows, "view", "fost.response.405");
     fostlib::push_back(allows, "configuration", "allow", "GET");
     fostlib::http::server::request req;
-    std::pair<boost::shared_ptr<fostlib::mime>, int> response(
+    std::pair<std::shared_ptr<fostlib::mime>, int> response(
             fostlib::urlhandler::view::execute(
                     allows, "/", req, fostlib::host()));
     FSL_CHECK_EQ(response.second, 405);
@@ -57,7 +49,7 @@ FSL_TEST_FUNCTION(multiple_allows_config) {
     fostlib::push_back(allows, "configuration", "allow", "GET");
     fostlib::push_back(allows, "configuration", "allow", "POST");
     fostlib::http::server::request req;
-    std::pair<boost::shared_ptr<fostlib::mime>, int> response(
+    std::pair<std::shared_ptr<fostlib::mime>, int> response(
             fostlib::urlhandler::view::execute(
                     allows, "/", req, fostlib::host()));
     FSL_CHECK_EQ(response.second, 405);

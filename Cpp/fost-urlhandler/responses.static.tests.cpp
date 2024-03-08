@@ -1,11 +1,3 @@
-/**
-    Copyright 2019-2020 Red Anchor Trading Co. Ltd.
-
-    Distributed under the Boost Software License, Version 1.0.
-    See <http://www.boost.org/LICENSE_1_0.txt>
- */
-
-
 #include <fost/urlhandler>
 #include <fost/test>
 
@@ -21,11 +13,11 @@ namespace {
     /// Set up the tests. Most of this only needs to be run once,
     /// but it doesn't matter if it runs multiple times
     fostlib::json setup() {
-        auto const root = fostlib::coerce<fostlib::fs::path>(
+        auto const root = fostlib::coerce<std::filesystem::path>(
                                   fostlib::test::c_files_folder.value())
                 / "static-files";
-        fostlib::fs::create_directories(root);
-        fostlib::fs::create_directory(root / "empty");
+        std::filesystem::create_directories(root);
+        std::filesystem::create_directory(root / "empty");
         fostlib::utf::save_file(root / "index.html", "html");
         fostlib::utf::save_file(root / "index.txt", "text");
         fostlib::json conf;

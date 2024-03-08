@@ -1,11 +1,3 @@
-/**
-    Copyright 2012-2020 Red Anchor Trading Co. Ltd.
-
-    Distributed under the Boost Software License, Version 1.0.
-    See <http://www.boost.org/LICENSE_1_0.txt>
- */
-
-
 #include <fost/urlhandler>
 #include <fost/test>
 
@@ -41,7 +33,7 @@ FSL_TEST_FUNCTION(with_location_config) {
     fostlib::insert(
             location, "configuration", "location", "http://test.example.com/");
     fostlib::http::server::request req;
-    std::pair<boost::shared_ptr<fostlib::mime>, int> response(
+    std::pair<std::shared_ptr<fostlib::mime>, int> response(
             fostlib::urlhandler::view::execute(
                     location, "/", req, fostlib::host()));
     FSL_CHECK_EQ(response.second, 301);

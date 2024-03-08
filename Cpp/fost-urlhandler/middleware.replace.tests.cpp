@@ -1,11 +1,3 @@
-/**
-    Copyright 2020 Red Anchor Trading Co. Ltd.
-
-    Distributed under the Boost Software License, Version 1.0.
-    See <http://www.boost.org/LICENSE_1_0.txt>
- */
-
-
 #include <fost/urlhandler>
 #include <fost/push_back>
 #include <fost/test>
@@ -114,12 +106,12 @@ namespace {
       public:
         response_font() : view("test.response.font") {}
 
-        std::pair<boost::shared_ptr<fostlib::mime>, int> operator()(
+        std::pair<std::shared_ptr<fostlib::mime>, int> operator()(
                 const fostlib::json &config,
                 const fostlib::string &,
                 fostlib::http::server::request &req,
                 const fostlib::host &) const {
-            boost::shared_ptr<fostlib::mime> response;
+            std::shared_ptr<fostlib::mime> response;
             response.reset(new fostlib::text_body(
                     "A B C D E F G OK", fostlib::mime::mime_headers(),
                     "font/ttf"));
@@ -152,12 +144,12 @@ namespace {
       public:
         response_plain() : view("test.response.plain") {}
 
-        std::pair<boost::shared_ptr<fostlib::mime>, int> operator()(
+        std::pair<std::shared_ptr<fostlib::mime>, int> operator()(
                 const fostlib::json &config,
                 const fostlib::string &,
                 fostlib::http::server::request &req,
                 const fostlib::host &) const {
-            boost::shared_ptr<fostlib::mime> response;
+            std::shared_ptr<fostlib::mime> response;
             response.reset(new fostlib::text_body(
                     "<html><head><title>OK</title></head>"
                     "<body><h1>OK</h1></body></html>",
@@ -194,12 +186,12 @@ namespace {
       public:
         response_javascript() : view("test.response.javascript") {}
 
-        std::pair<boost::shared_ptr<fostlib::mime>, int> operator()(
+        std::pair<std::shared_ptr<fostlib::mime>, int> operator()(
                 const fostlib::json &config,
                 const fostlib::string &,
                 fostlib::http::server::request &req,
                 const fostlib::host &) const {
-            boost::shared_ptr<fostlib::mime> response;
+            std::shared_ptr<fostlib::mime> response;
             response.reset(new fostlib::text_body(
                     "<script>console.log('OK')</script>",
                     fostlib::mime::mime_headers(), "application/javascript"));

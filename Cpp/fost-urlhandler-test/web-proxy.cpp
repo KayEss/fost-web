@@ -1,18 +1,11 @@
-/**
-    Copyright 2019 Red Anchor Trading Co. Ltd.
-
-    Distributed under the Boost Software License, Version 1.0.
-    See <http://www.boost.org/LICENSE_1_0.txt>
- */
-
-
 #include <fost/insert>
 #include <fost/urlhandler>
 #include <fost/test>
 
 
 namespace {
-    auto proxy_config(f5::u8view const proxy, f5::u8view const upstream) {
+    auto proxy_config(
+            felspar::u8view const proxy, felspar::u8view const upstream) {
         fostlib::json conf;
         insert(conf, "view", fostlib::string{"fost.proxy." + proxy});
         insert(conf, "configuration", "base", upstream);

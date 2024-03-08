@@ -32,7 +32,7 @@ install(TARGETS fost-urlhandler LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
 install(DIRECTORY ../include/fost DESTINATION include)
 
 if(TARGET check)
-    add_library(fost-urlhandler-smoke STATIC EXCLUDE_FROM_ALL
+    add_test_run(check fost-core-test fost-urlhandler TESTS
             control.exception.tests.cpp
             control.status-condition-tests.cpp
             middleware.replace.tests.cpp
@@ -48,6 +48,4 @@ if(TARGET check)
             view-tests.cpp
             view.request-id.tests.cpp
         )
-    target_link_libraries(fost-urlhandler-smoke fost-urlhandler)
-    smoke_test(fost-urlhandler-smoke)
 endif()
