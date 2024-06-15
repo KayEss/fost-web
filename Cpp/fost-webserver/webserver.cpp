@@ -1,6 +1,5 @@
 #include <fost/dynlib>
 #include <fost/log>
-#include <fost/log-sinks.hpp>
 #include <fost/main>
 #include <fost/threading>
 #include <fost/unicode>
@@ -30,13 +29,15 @@ namespace {
             "webserver",
             "Logging sinks",
             fostlib::json::parse("{\"sinks\":[]}"));
+
+    bool simple_logging(fostlib::log::message const &m) {
+        fostlib::simple_logger(m, 0, true, std::cout);
+        return true;
+    }
 }
 
 
-FSL_MAIN(
-        "webserver",
-        "Threaded HTTP server\n"
-        "Copyright (C) 2002-2020 Red Anchor Trading Co. Ltd.")
+FSL_MAIN("webserver", "Threaded HTTP server")
 (fostlib::ostream &o, fostlib::arguments &args) {
     args.commandSwitch("C", c_cwd.section(), c_cwd.name());
     if (not c_cwd.value().empty()) {
@@ -68,11 +69,7 @@ FSL_MAIN(
     args.commandSwitch("m", c_mime.section(), c_mime.name());
 
     // Set up the logging options
-    // std::unique_ptr<fostlib::log::global_sink_configuration> loggers;
-    // if (not c_logger.value().isnull() && c_logger.value().has_key("sinks")) {
-    //     loggers = std::make_unique<fostlib::log::global_sink_configuration>(
-    //             c_logger.value());
-    // }
+    fostlib::log::logging_function(&simple_logging);
 
     // Load MIME types
     fostlib::urlhandler::load_mime_configuration(c_mime.value());
