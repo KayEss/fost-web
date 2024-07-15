@@ -5,6 +5,11 @@
 #include <fost/unicode>
 #include <fost/urlhandler>
 
+#include <future>
+
+
+using namespace std::literals;
+
 
 namespace {
     const fostlib::setting<fostlib::string>
@@ -39,19 +44,41 @@ namespace {
 
 FSL_MAIN("webserver", "Threaded HTTP server")
 (fostlib::ostream &o, fostlib::arguments &args) {
+    auto const started = std::chrono::steady_clock::now();
+
     args.commandSwitch("C", c_cwd.section(), c_cwd.name());
     if (not c_cwd.value().empty()) {
         std::filesystem::current_path(
                 fostlib::coerce<std::filesystem::path>(c_cwd.value()));
     }
     // Load the configuration files we've been given on the command line
-    std::vector<fostlib::settings> configuration;
-    configuration.reserve(args.size());
+    std::vector<std::pair<std::filesystem::path, std::future<fostlib::settings>>>
+            loads;
+    loads.reserve(args.size());
     for (std::size_t arg{1}; arg != args.size(); ++arg) {
         o << "Loading config " << fostlib::json(args[arg].value());
         auto filename =
                 fostlib::coerce<std::filesystem::path>(args[arg].value());
-        configuration.emplace_back(std::move(filename));
+        loads.push_back(
+                {filename,
+                 std::async(
+                         [](auto filename) {
+                             return fostlib::settings{filename};
+                         },
+                         filename)});
+    }
+    std::vector<fostlib::settings> configuration;
+    configuration.reserve(loads.size());
+    while (loads.size()) {
+        std::erase_if(loads, [&](auto &f) {
+            if (f.second.wait_for(10ms) == std::future_statush::ready) {
+                configuration.push_back(std::move(f.second.get()));
+                std::cout << "Loaded " << f.first << '\n';
+                return true;
+            } else {
+                return false;
+            }
+        });
     }
 
     // Load any shared objects
@@ -76,7 +103,12 @@ FSL_MAIN("webserver", "Threaded HTTP server")
 
     // Bind server to host and port
     fostlib::http::server server(fostlib::host(c_host.value()), c_port.value());
-    o << "Answering requests on http://" << server.binding() << ":"
+
+    auto const ended = std::chrono::steady_clock::now();
+    o << "Loading took "
+      << std::chrono::duration_cast<std::chrono::milliseconds>(ended - started)
+                    .count()
+      << "ms\nAnswering requests on http://" << server.binding() << ":"
       << server.port() << "/" << std::endl;
 
     // Service requests
