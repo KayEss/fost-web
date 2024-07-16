@@ -71,7 +71,7 @@ FSL_MAIN("webserver", "Threaded HTTP server")
     configuration.reserve(loads.size());
     while (loads.size()) {
         std::erase_if(loads, [&](auto &f) {
-            if (f.second.wait_for(10ms) == std::future_statush::ready) {
+            if (f.second.wait_for(10ms) == std::future_status::ready) {
                 configuration.push_back(std::move(f.second.get()));
                 std::cout << "Loaded " << f.first << '\n';
                 return true;
