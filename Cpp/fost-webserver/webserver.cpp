@@ -52,7 +52,7 @@ FSL_MAIN("webserver", "Threaded HTTP server")
                 fostlib::coerce<std::filesystem::path>(c_cwd.value()));
     }
     // Load the configuration files we've been given on the command line
-    std::vector<std::pair<std::filesystem::path, std::future<fostlib::settings>>>
+    std::vector<std::pair<std::filesystem::path, std::future<fostlib::json>>>
             loads;
     loads.reserve(args.size());
     for (std::size_t arg{1}; arg != args.size(); ++arg) {
@@ -63,22 +63,29 @@ FSL_MAIN("webserver", "Threaded HTTP server")
                 {filename,
                  std::async(
                          [](auto filename) {
-                             return fostlib::settings{filename};
+                             return fostlib::json::sloppy_parse(
+                                     fostlib::utf::load_file(filename));
                          },
                          filename)});
     }
-    std::vector<fostlib::settings> configuration;
-    configuration.reserve(loads.size());
+    std::map<std::filesystem::path, fostlib::json> configs;
     while (loads.size()) {
-        std::erase_if(loads, [&](auto &f) {
+        std::erase_if(loads, [&](auto &f) mutable {
             if (f.second.wait_for(10ms) == std::future_status::ready) {
-                configuration.push_back(std::move(f.second.get()));
-                std::cout << "Loaded " << f.first << '\n';
+                configs[f.first] = f.second.get();
+                std::cout << "Loaded \"" << f.first << "\"\n\"";
                 return true;
             } else {
                 return false;
             }
         });
+    }
+    std::vector<fostlib::settings> configurations;
+    for (std::size_t arg{1}; arg != args.size(); ++arg) {
+        configurations.push_back(fostlib::settings{
+                args[arg].value(),
+                configs[fostlib::coerce<std::filesystem::path>(
+                        args[arg].value())]});
     }
 
     // Load any shared objects
