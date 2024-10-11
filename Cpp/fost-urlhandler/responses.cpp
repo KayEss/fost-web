@@ -71,6 +71,7 @@ namespace {
     const response response_404 = response{404, "Resource not found"};
     const response response_410 = response{410};
     const response response_412 = response{412};
+    const response response_422 = response{422};
 
     const response response_500 = response{500};
     const response response_501 = response{501};
