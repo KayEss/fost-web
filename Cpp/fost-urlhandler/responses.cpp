@@ -66,6 +66,7 @@ namespace {
     const response response_generic = response{};
 
     const response response_200 = response{200};
+    const response response_202 = response{202};
 
     const response response_403 = response{403};
     const response response_404 = response{404, "Resource not found"};
