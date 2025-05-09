@@ -46,9 +46,10 @@ namespace {
                     view_for(view_fn.first)(view_fn.second, path, req, h));
             if (wrapped.first->headers()["Content-Type"].value()
                 == "text/html") {
-                fostlib::string skin(fostlib::utf::load_file(
-                        fostlib::coerce<std::filesystem::path>(
-                                configuration["template"])));
+                fostlib::string skin(
+                        fostlib::utf::load_file(
+                                fostlib::coerce<std::filesystem::path>(
+                                        configuration["template"])));
                 fostlib::string content(
                         fostlib::coerce<fostlib::string>(*wrapped.first));
 

@@ -82,10 +82,11 @@ FSL_MAIN("webserver", "Threaded HTTP server")
     }
     std::vector<fostlib::settings> configurations;
     for (std::size_t arg{1}; arg != args.size(); ++arg) {
-        configurations.push_back(fostlib::settings{
-                args[arg].value(),
-                configs[fostlib::coerce<std::filesystem::path>(
-                        args[arg].value())]});
+        configurations.push_back(
+                fostlib::settings{
+                        args[arg].value(),
+                        configs[fostlib::coerce<std::filesystem::path>(
+                                args[arg].value())]});
     }
 
     // Load any shared objects
@@ -93,8 +94,9 @@ FSL_MAIN("webserver", "Threaded HTTP server")
     std::vector<std::shared_ptr<fostlib::dynlib>> dynlibs;
     for (fostlib::json::const_iterator p(so.begin()); p != so.end(); ++p) {
         o << "Loading code plugin " << *p;
-        dynlibs.push_back(std::make_shared<fostlib::dynlib>(
-                fostlib::coerce<fostlib::string>(*p)));
+        dynlibs.push_back(
+                std::make_shared<fostlib::dynlib>(
+                        fostlib::coerce<fostlib::string>(*p)));
     }
 
     // Process command line arguments last

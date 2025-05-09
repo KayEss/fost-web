@@ -16,14 +16,16 @@ namespace {
 
 void fostlib::urlhandler::load_mime_configuration(
         const fostlib::string &filename) {
-    fostlib::string db_data(fostlib::utf::load_file(
-            fostlib::coerce<std::filesystem::path>(filename)));
+    fostlib::string db_data(
+            fostlib::utf::load_file(
+                    fostlib::coerce<std::filesystem::path>(filename)));
     fostlib::json db_json(fostlib::json::parse(db_data));
     for (fostlib::json::const_iterator jc(db_json.begin()); jc != db_json.end();
          ++jc) {
-        mime_database().push_back(std::make_shared<setting_type>(
-                filename, "MIME", fostlib::coerce<fostlib::string>(jc.key()),
-                *jc));
+        mime_database().push_back(
+                std::make_shared<setting_type>(
+                        filename, "MIME",
+                        fostlib::coerce<fostlib::string>(jc.key()), *jc));
     }
 }
 

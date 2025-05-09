@@ -35,8 +35,9 @@ FSL_TEST_FUNCTION(invalid_json_body) {
             fostlib::coerce<std::vector<unsigned char>>(
                     fostlib::utf8_string("{\"is_valid\": \"Hello\"}")));
     fostlib::http::server::request req{"GET", "/", std::move(body)};
-    auto response(fostlib::urlhandler::view::execute(
-            config, "/", req, fostlib::host()));
+    auto response(
+            fostlib::urlhandler::view::execute(
+                    config, "/", req, fostlib::host()));
     FSL_CHECK_EQ(response.second, 422);
 }
 
@@ -53,7 +54,8 @@ FSL_TEST_FUNCTION(valid_json_body) {
             fostlib::coerce<std::vector<unsigned char>>(
                     fostlib::utf8_string("{\"is_valid\": true}")));
     fostlib::http::server::request req{"GET", "/", std::move(body)};
-    auto response(fostlib::urlhandler::view::execute(
-            config, "/", req, fostlib::host()));
+    auto response(
+            fostlib::urlhandler::view::execute(
+                    config, "/", req, fostlib::host()));
     FSL_CHECK_EQ(response.second, 200);
 }
