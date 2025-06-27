@@ -70,11 +70,11 @@ FSL_TEST_FUNCTION(location_replacement) {
     auto config = proxy_config("reverse", "https://kirit.com/");
     insert(config, "configuration", "Location", "http://localhost/");
     auto const [response, status] = fostlib::urlhandler::view::execute(
-            config, "/_resources", req, fostlib::host{});
+            config, "/Blog:/", req, fostlib::host{});
     FSL_CHECK_EQ(status, 302);
     FSL_CHECK_EQ(
             response->headers()["Location"].value(),
-            "http://localhost/_resources/");
+            "http://localhost/Site:/Site%20archive");
 }
 
 
@@ -87,11 +87,11 @@ FSL_TEST_FUNCTION(location_replacement_with_path) {
     auto config = proxy_config("reverse", "https://kirit.com/");
     insert(config, "configuration", "Location", "http://localhost/proxy/");
     auto const [response, status] = fostlib::urlhandler::view::execute(
-            config, "/_resources", req, fostlib::host{});
+            config, "/Blog:/", req, fostlib::host{});
     FSL_CHECK_EQ(status, 302);
     FSL_CHECK_EQ(
             response->headers()["Location"].value(),
-            "http://localhost/proxy/_resources/");
+            "http://localhost/proxy/Site:/Site%20archive");
 }
 
 
@@ -102,9 +102,9 @@ FSL_TEST_FUNCTION(location_replacement_no_config) {
     req.headers().add("Host", "localhost");
     auto const config = proxy_config("reverse", "https://kirit.com/");
     auto const [response, status] = fostlib::urlhandler::view::execute(
-            config, "/_resources", req, fostlib::host{});
+            config, "/Blog:/", req, fostlib::host{});
     FSL_CHECK_EQ(status, 302);
-    FSL_CHECK_EQ(response->headers()["Location"].value(), "/_resources/");
+    FSL_CHECK_EQ(response->headers()["Location"].value(), "/Site:/Site%20archive");
 }
 
 
