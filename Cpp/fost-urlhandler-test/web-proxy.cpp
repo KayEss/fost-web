@@ -104,7 +104,8 @@ FSL_TEST_FUNCTION(location_replacement_no_config) {
     auto const [response, status] = fostlib::urlhandler::view::execute(
             config, "/Blog:/", req, fostlib::host{});
     FSL_CHECK_EQ(status, 302);
-    FSL_CHECK_EQ(response->headers()["Location"].value(), "/Site:/Site%20archive");
+    FSL_CHECK_EQ(
+            response->headers()["Location"].value(), "/Site:/Site%20archive");
 }
 
 
