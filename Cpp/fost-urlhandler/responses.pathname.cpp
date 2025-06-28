@@ -1,4 +1,5 @@
 #include "fost-urlhandler.hpp"
+#include <fost/insert>
 #include <fost/urlhandler.hpp>
 
 
@@ -21,6 +22,13 @@ namespace {
                 /// The path is fully consumed by this view because it
                 /// matches in its entirety
                 return execute(configuration[path], "", req, h);
+            } else if (configuration.has_key(path + "/")) {
+                fostlib::json redir;
+                fostlib::insert(redir, "view", "fost.response.302");
+                fostlib::insert(
+                        redir, "configuration", "location",
+                        req.file_spec() + "/");
+                return execute(redir, "", req, h);
             } else {
                 return execute(
                         fostlib::json("fost.response.404"), path, req, h);
