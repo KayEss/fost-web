@@ -42,7 +42,7 @@ bool fostlib::urlhandler::service(fostlib::http::server::request &req) {
             auto view_conf = host_config
                     [host_config.has_key(hostname) ? hostname
                                                    : fostlib::string()];
-            auto path = coerce<string>(req.file_spec().underlying()).substr(1);
+            auto path = coerce<string>(req.file_spec()).substr(1);
             auto resource = view::execute(view_conf, path, req, host(hostname));
             req(*resource.first, resource.second);
         } catch (fostlib::exceptions::parse_error const &e) {
