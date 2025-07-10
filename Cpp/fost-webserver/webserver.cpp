@@ -73,7 +73,7 @@ FSL_MAIN("webserver", "Threaded HTTP server")
         std::erase_if(loads, [&](auto &f) mutable {
             if (f.second.wait_for(10ms) == std::future_status::ready) {
                 configs[f.first] = f.second.get();
-                std::cout << "Loaded \"" << f.first << "\"\n\"";
+                std::cout << "Loaded \"" << f.first << "\"\n";
                 return true;
             } else {
                 return false;
