@@ -63,14 +63,13 @@ std::pair<std::shared_ptr<fostlib::mime>, int>
                 host const &host) const {
     timer time;
     auto info = log::info(fostlib::c_fost_web_urlhandler);
-    info("id", fostlib::guid());
     info("request", "path", "full", request.file_spec());
     info("request", "path", "outstanding", path);
 
     url const base{coerce<string>(configuration["base"])};
     auto const location = upstream(configuration, base, path, request, host);
-    info("proxy", "url", location);
-    info("proxy", "headers", request.data()->headers());
+    info("upstream", "url", location);
+    info("upstream", "headers", request.data()->headers());
 
     http::user_agent ua(base);
     auto proxy = ua_request(configuration, location, path, request, host);
