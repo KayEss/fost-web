@@ -20,13 +20,14 @@ FSL_TEST_SUITE(web_proxy);
 /// Connect to an upstream server over HTTP
 FSL_TEST_FUNCTION(http) {
     fostlib::http::server::request req;
-    req.headers().add("Host", "httpforever.com");
-    auto const config = proxy_config("transparent", "http://httpforever.com/");
+    req.headers().add("Host", "neverssl.com");
+    auto const config = proxy_config("transparent", "http://neverssl.com/");
     auto const [response, status] = fostlib::urlhandler::view::execute(
-            config, "/", req, fostlib::host{"httpforever.com"});
+            config, "/", req, fostlib::host{"neverssl.com"});
     FSL_CHECK_EQ(status, 200);
     FSL_CHECK(
-            fostlib::string{response->body_as_string()}.find("HTTP FOREVER")
+            fostlib::string{response->body_as_string()}.find(
+                    "NeverSSL - Connecting")
             != fostlib::string::npos);
 }
 
